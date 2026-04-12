@@ -43,48 +43,6 @@ I'm a **Vibe Coder** and **Designer** who believes that great software isn't jus
 
 ---
 
-## 🔥 Featured Projects
-
-<!-- Replace # with your actual project links -->
-
-<div align="center">
-
-<table>
-  <tr>
-    <td align="center" width="33%">
-      <a href="#">
-        <img src="https://via.placeholder.com/300x150/6366f1/ffffff?text=Project+One" alt="Project One" width="100%"/>
-        <br/>
-        <b>🎨 Creative Portfolio</b>
-        <br/>
-        <sub>A stunning showcase of design work</sub>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="#">
-        <img src="https://via.placeholder.com/300x150/ec4899/ffffff?text=Project+Two" alt="Project Two" width="100%"/>
-        <br/>
-        <b>🤖 AI Assistant</b>
-        <br/>
-        <sub>Smart tools powered by AI</sub>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="#">
-        <img src="https://via.placeholder.com/300x150/10b981/ffffff?text=Project+Three" alt="Project Three" width="100%"/>
-        <br/>
-        <b>🌐 Interactive Web App</b>
-        <br/>
-        <sub>Engaging user experiences</sub>
-      </a>
-    </td>
-  </tr>
-</table>
-
-</div>
-
----
-
 ## ⚡ Tech Stack & Tools
 
 <div align="center">
@@ -137,9 +95,7 @@ I'm a **Vibe Coder** and **Designer** who believes that great software isn't jus
 
 <div align="center">
 
-### 🌈 "Code is poetry, design is the rhythm." 
-
-⌨️ Made with ❤️ and ☕ by **You**
+### "Code is poetry, design is the rhythm." 
 
 ![Visitor Count](https://komarev.com/ghpvc/?username=YOUR_USERNAME&color=6366f1)
 
