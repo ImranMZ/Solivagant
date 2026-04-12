@@ -1,9 +1,9 @@
-# 🚀 AI-Powered Brand & Website Generator
-> **BSCS Final Year Project** | Generate complete brand identities and landing pages in seconds using AI.
+# AI-Powered Brand & Website Generator
+> **Final Year Project** | Generate complete brand identities and landing pages in seconds using AI.
 
 ---
 
-## 📂 Project Architecture
+## Project Architecture
 
 ### Folder Structure
 ```
@@ -62,7 +62,7 @@ ai-brand-generator/
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend
 | Technology | Purpose |
@@ -99,9 +99,9 @@ ai-brand-generator/
 
 ---
 
-## ✨ MVP Core Features
+## MVP Core Features
 
-### 1. **User Input Interface** 📝
+### 1. **User Input Interface** 
 - Simple form to collect:
   - Business name
   - Industry/niche
@@ -109,13 +109,13 @@ ai-brand-generator/
   - Preferred color scheme (or auto-generate)
   - Tagline (optional)
 
-### 2. **AI Logo Generation** 🎨
+### 2. **AI Logo Generation** 
 - Generate 3-4 logo variations based on input
 - Display preview with download option (PNG/SVG)
 - Use DALL-E 3 or Stable Diffusion via API
 - *Prompt Engineering*: "Minimalist logo for [business] in [industry], [style] style, vector art"
 
-### 3. **Landing Page Generator** 💻
+### 3. **Landing Page Generator** 
 - Auto-generate complete HTML/CSS single-page website including:
   - Hero section with headline & CTA
   - About section
@@ -126,7 +126,7 @@ ai-brand-generator/
 - Live preview in browser
 - Download as `.zip` file
 
-### 4. **SEO Meta Tags Generator** 🔍
+### 4. **SEO Meta Tags Generator** 
 - Generate optimized meta tags:
   - Title tag (60 chars)
   - Meta description (160 chars)
@@ -134,7 +134,7 @@ ai-brand-generator/
   - Keywords based on industry
   - Structured data (JSON-LD) for local business
 
-### 5. **Results Dashboard** 📊
+### 5. **Results Dashboard** 
 - Unified view of all generated assets:
   - Logo gallery
   - Website preview (iframe)
@@ -142,7 +142,7 @@ ai-brand-generator/
 - One-click download all assets
 - Option to regenerate individual components
 
-### 6. **Export & Share** 📤
+### 6. **Export & Share** 
 - Download complete brand kit as ZIP:
   - Logo files (PNG, SVG)
   - `index.html` + `styles.css`
@@ -152,16 +152,16 @@ ai-brand-generator/
 
 ---
 
-## 🎯 Success Metrics for MVP
-- ⏱️ Generate complete brand kit in < 30 seconds
-- 🎨 Produce visually coherent designs (color consistency)
-- 📱 Mobile-responsive landing pages
-- ✅ Pass basic SEO score (>80 on Lighthouse)
-- 🚀 Deploy and demonstrate end-to-end workflow
+##  Success Metrics for MVP
+-  Generate complete brand kit in < 30 seconds
+-  Produce visually coherent designs (color consistency)
+-  Mobile-responsive landing pages
+-  Pass basic SEO score (>80 on Lighthouse)
+-  Deploy and demonstrate end-to-end workflow
 
 ---
 
-## 📈 Future Enhancements (Post-MVP)
+## Future Enhancements (Post-MVP)
 - User accounts & project history
 - Multiple page generation (About, Contact, Blog)
 - Custom domain integration
@@ -171,7 +171,7 @@ ai-brand-generator/
 
 ---
 
-## 🏁 Getting Started
+## Getting Started
 
 ```bash
 # Clone repository
@@ -193,9 +193,3 @@ cd backend && uvicorn app.main:app --reload
 
 # Terminal 2: Frontend
 cd frontend && npm run dev
-```
-
----
-
-**Built with ❤️ for BSCS Final Year Project**  
-*Combining Graphic Design, Web Development, AI Tools & SEO*
