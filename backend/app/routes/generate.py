@@ -24,10 +24,10 @@ router = APIRouter()
 async def generate_brand(request: BrandGenerationRequest):
     """
     Generate a complete brand identity including logo, colors, website content, and SEO tags
-    
+
     Args:
         request: BrandGenerationRequest with business details
-        
+
     Returns:
         BrandGenerationResponse with all generated assets
     """
@@ -35,7 +35,7 @@ async def generate_brand(request: BrandGenerationRequest):
         # Initialize services
         logo_service = LogoGenerator()
         content_service = WebsiteGenerator()
-        
+
         # Generate logo URL
         logo_prompt = get_logo_prompt(
             request.business_name,
@@ -48,7 +48,7 @@ async def generate_brand(request: BrandGenerationRequest):
             request.style,
             request.color_scheme
         )
-        
+
         # Generate brand content (colors, website copy, SEO)
         brand_content = await content_service.generate_brand_content(
             request.business_name,
@@ -56,12 +56,12 @@ async def generate_brand(request: BrandGenerationRequest):
             request.style,
             request.tagline
         )
-        
+
         # Extract and structure the response
         colors_data = brand_content.get("colors", {})
         website_data = brand_content.get("website_content", {})
         seo_data = brand_content.get("seo_tags", {})
-        
+
         # Build response object
         response = BrandGenerationResponse(
             business_name=request.business_name,
@@ -93,9 +93,9 @@ async def generate_brand(request: BrandGenerationRequest):
                 json_ld=seo_data.get("json_ld", "")
             )
         )
-        
+
         return response
-        
+
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -112,36 +112,36 @@ async def generate_logo_only(
 ):
     """
     Generate only a logo without other brand assets
-    
+
     Args:
         business_name: Name of the business
         industry: Industry/niche
         style: Logo style
         color_scheme: Optional color scheme
-        
+
     Returns:
         Logo URL and prompt
     """
     try:
         logo_service = LogoGenerator()
-        
+
         logo_url = logo_service.get_logo_url(
             business_name,
             industry,
             style,
             color_scheme
         )
-        
+
         prompt = get_logo_prompt(business_name, industry, style)
-        
+
         return {
             "url": logo_url,
             "prompt": prompt,
             "business_name": business_name
         }
-        
-    except Exception as e:
+
+    except Exception:
         raise HTTPException(
             status_code=500,
-            detail=f"Error generating logo: {str(e)}"
+            detail="Error generating logo"
         )

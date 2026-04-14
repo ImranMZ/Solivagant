@@ -2,6 +2,7 @@
 AI prompt templates for content generation
 """
 
+
 def get_system_prompt() -> str:
     """Get the system prompt for the AI"""
     return """You are an expert brand strategist and web developer. 
@@ -12,16 +13,16 @@ Be creative, professional, and ensure consistency across all brand elements."""
 
 def get_brand_generation_prompt(business_name: str, industry: str, style: str, tagline: str = None) -> str:
     """Generate the prompt for brand creation"""
-    
+
     prompt = f"""Create a complete brand identity for a business with these details:
 - Business Name: {business_name}
 - Industry: {industry}
 - Style: {style}
 """
-    
+
     if tagline:
         prompt += f"- Tagline: {tagline}\n"
-    
+
     prompt += """
 Provide the following in valid JSON format:
 {
@@ -56,7 +57,7 @@ Ensure:
 3. SEO tags are optimized for search engines
 4. All text is original and compelling
 """
-    
+
     return prompt
 
 
