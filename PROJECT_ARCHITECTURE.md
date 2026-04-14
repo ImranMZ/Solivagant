@@ -85,8 +85,8 @@ ai-brand-generator/
 ### AI APIs & Services
 | Service | Purpose | Alternative Options |
 |---------|---------|---------------------|
-| **OpenAI GPT-4** | Generate website copy, SEO tags, color schemes | Anthropic Claude, Google Gemini |
-| **DALL-E 3 / Stable Diffusion API** | Logo/image generation | Midjourney API, Leonardo.ai |
+| **Groq API (Llama 3)** | Generate website copy, SEO tags, color schemes | Anthropic Claude, Google Gemini |
+| **Pollinations.ai** | Logo/image generation (free, no API key) | DALL-E 3, Stable Diffusion API |
 | **Replicate API** | Run open-source image models cost-effectively | Hugging Face Inference API |
 | **Vercel AI SDK** | Stream AI responses smoothly | - |
 
@@ -112,8 +112,9 @@ ai-brand-generator/
 ### 2. **AI Logo Generation** 
 - Generate 3-4 logo variations based on input
 - Display preview with download option (PNG/SVG)
-- Use DALL-E 3 or Stable Diffusion via API
+- Use Pollinations.ai (free, no API key required)
 - *Prompt Engineering*: "Minimalist logo for [business] in [industry], [style] style, vector art"
+- URL structure: `https://image.pollinations.ai/prompt/{prompt}`
 
 ### 3. **Landing Page Generator** 
 - Auto-generate complete HTML/CSS single-page website including:
