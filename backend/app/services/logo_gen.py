@@ -4,6 +4,7 @@ Generates logos based on text prompts using Pollinations.ai image generation API
 """
 
 import httpx
+from urllib.parse import quote
 from typing import Optional
 
 
@@ -44,7 +45,7 @@ class LogoGenerator:
             prompt += f", {color_scheme} colors"
         
         # URL encode the prompt
-        encoded_prompt = httpx.URL.encode_component(prompt)
+        encoded_prompt = quote(prompt)
         logo_url = f"{self.BASE_URL}{encoded_prompt}"
         
         # Fetch the generated logo
@@ -80,7 +81,7 @@ class LogoGenerator:
             prompt += f", {color_scheme} colors"
         
         # URL encode the prompt
-        encoded_prompt = httpx.URL.encode_component(prompt)
+        encoded_prompt = quote(prompt)
         logo_url = f"{self.BASE_URL}{encoded_prompt}"
         
         # Fetch the generated logo
@@ -114,5 +115,5 @@ class LogoGenerator:
         if color_scheme:
             prompt += f", {color_scheme} colors"
         
-        encoded_prompt = httpx.URL.encode_component(prompt)
+        encoded_prompt = quote(prompt)
         return f"{self.BASE_URL}{encoded_prompt}"
