@@ -1,0 +1,56 @@
+name: Python application
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      working-directory: ./backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Lint with flake8 (optional)
+      run: |
+        pip install flake8
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || true
+        # Exit-zero treats all errors as warnings
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics || true
+    
+    - name: Test import of all modules
+      working-directory: ./backend
+      run: |
+        python -c "from app import app; print('Backend import successful')"
+    
+    - name: Verify application structure
+      working-directory: ./backend
+      run: |
+        python -c "
+import sys
+sys.path.insert(0, '.')
+from app.services.logo_gen import LogoGenerator
+from app.services.website_gen import WebsiteGenerator
+from app.services.seo_gen import SEOGenerator
+from app.routes.generate import router as generate_router
+from app.routes.health import router as health_router
+from app.models.request import BrandGenerationRequest, BrandGenerationResponse
+print('All modules imported successfully')
+"

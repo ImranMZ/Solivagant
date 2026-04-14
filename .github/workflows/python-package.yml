@@ -1,0 +1,57 @@
+name: Python package
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      working-directory: ./backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Test backend imports
+      working-directory: ./backend
+      run: |
+        python -c "from app import app; print('Import successful for Python ${{ matrix.python-version }}')"
+    
+    - name: Validate all modules
+      working-directory: ./backend
+      run: |
+        python -c "
+import sys
+sys.path.insert(0, '.')
+from app.services.logo_gen import LogoGenerator
+from app.services.website_gen import WebsiteGenerator
+from app.services.seo_gen import SEOGenerator
+from app.routes.generate import router as generate_router
+from app.routes.health import router as health_router
+from app.models.request import (
+    BrandGenerationRequest, 
+    BrandGenerationResponse,
+    LogoResult,
+    ColorScheme,
+    WebsiteContent,
+    SEOtags
+)
+from app.utils.prompts import get_system_prompt, get_brand_generation_prompt, get_logo_prompt
+print(f'All modules validated successfully for Python')
+"

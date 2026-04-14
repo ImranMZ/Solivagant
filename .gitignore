@@ -1,1 +1,48 @@
-Nothing should be ignored based on the provided file changes. The added and modified files are all source code and documentation files (.jsx, .md) without any build artifacts, dependencies, or temporary files that would require gitignore entries.
+```gitignore
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+.env.local
+*.env.*
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Coverage reports
+.coverage
+coverage/
+htmlcov/
+
+# IDE specific
+.vscode/
+.idea/
+
+# Build artifacts
+dist/
+build/
+target/
+*.o
+*.obj
+*.out
+*.exe
+*.dll
+*.so
+*.a
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+```
