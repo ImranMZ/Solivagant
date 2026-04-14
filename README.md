@@ -1,83 +1,150 @@
 <div align="center">
 
-# ✨ Hello, I'm a Vibe Coder & Designer 🎨
+# 🚀 AI-Powered Brand & Website Generator
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit%20Now-blue?style=for-the-badge&logo=google-chrome)](#)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow%20Me-black?style=for-the-badge&logo=github)](#)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](#)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg?style=for-the-badge&logo=python)](https://python.org)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green.svg?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
 
-### 🚀 Where Code Meets Creativity | AI Enthusiast | UI/UX Lover
+### ✨ Generate Complete Brand Identities & Landing Pages in Seconds Using AI
+
+**$0 Budget Friendly** - Uses free Groq API (Llama 3) and Pollinations.ai
 
 </div>
 
 ---
 
-## 🌟 About Me
+## 🌟 Overview
 
-```python
-class VibeCoder:
-    def __init__(self):
-        self.name = "Creative Developer"
-        self.passion = ["Design", "Code", "AI Tools"]
-        self.mission = "Building beautiful digital experiences"
-    
-    def create(self):
-        return "✨ Magic happens here ✨"
+This project is an **AI-powered brand generator** that creates complete brand identities and landing pages in seconds. Perfect for entrepreneurs, startups, and anyone needing a quick professional online presence.
+
+### Key Features
+- 🎨 **AI Logo Generation** - Create unique logos using Pollinations.ai (free, no API key)
+- 🌈 **Color Scheme Generation** - Get cohesive color palettes for your brand
+- 📝 **Website Content** - Auto-generate compelling copy for your landing page
+- 🔍 **SEO Meta Tags** - Optimized meta tags for search engines
+- 📱 **Responsive Design** - Mobile-friendly landing pages
+- 💾 **One-Click Export** - Download all assets as a ZIP file
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Next.js 14** - React framework with SSR
+- **Tailwind CSS** - Rapid, responsive styling
+- **Framer Motion** - Smooth animations
+- **React Hook Form** - Form handling
+- **Axios** - HTTP client
+
+### Backend
+- **FastAPI** - High-performance Python API
+- **Groq API (Llama 3)** - Free AI text/code generation
+- **Pollinations.ai** - Free logo/image generation
+- **Pydantic** - Data validation
+- **Uvicorn** - ASGI server
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- Groq API Key (free from https://console.groq.com)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/YOUR_USERNAME/ai-brand-generator.git
+cd ai-brand-generator
 ```
 
-I'm a **Vibe Coder** and **Designer** who believes that great software isn't just about functionality—it's about the *feeling* it creates. I blend clean code with stunning visuals to craft websites and tools that users love to interact with.
+### 2. Setup Backend
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# Configure environment variables
+cp .env.example .env
+# Edit .env and add your GROQ_API_KEY
+```
+
+### 3. Setup Frontend
+```bash
+cd ../frontend
+npm install
+
+# Configure environment variables
+cp .env.local.example .env.local
+```
+
+### 4. Run the Application
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+source venv/bin/activate  # If not already active
+uvicorn app.main:app --reload
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
+Open http://localhost:3000 in your browser!
 
 ---
 
-## 🛠️ What I Do
+## 📁 Project Structure
 
-<div align="center">
-
-| 🎨 **Graphic Design** | 💻 **Web Development** | 🤖 **AI Tools** |
-|:---:|:---:|:---:|
-| Branding & Logos | Interactive Websites | AI-Powered Solutions |
-| UI/UX Design | Responsive Layouts | Automation & Bots |
-| Visual Storytelling | Modern Frameworks | Creative AI Experiments |
-
-</div>
-
----
-
-## ⚡ Tech Stack & Tools
-
-<div align="center">
-
-### Languages & Frameworks
-![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![React](https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black)
-
-### Design Tools
-![Figma](https://img.shields.io/badge/-Figma-F24E1E?style=flat-square&logo=figma&logoColor=white)
-![Adobe Photoshop](https://img.shields.io/badge/-Photoshop-31A8FF?style=flat-square&logo=adobe-photoshop&logoColor=white)
-![Adobe Illustrator](https://img.shields.io/badge/-Illustrator-FF9A00?style=flat-square&logo=adobe-illustrator&logoColor=white)
-
-### AI & More
-![TensorFlow](https://img.shields.io/badge/-TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
-![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)
-![VS Code](https://img.shields.io/badge/-VS%20Code-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white)
-
-</div>
+```
+ai-brand-generator/
+├── frontend/                 # Next.js Frontend
+│   ├── src/
+│   │   ├── components/       # UI components
+│   │   ├── pages/            # Page routes
+│   │   ├── styles/           # Tailwind CSS
+│   │   └── utils/            # Helper functions
+│   └── package.json
+│
+├── backend/                  # FastAPI Backend
+│   ├── app/
+│   │   ├── routes/           # API endpoints
+│   │   ├── services/         # Business logic
+│   │   ├── models/           # Data models
+│   │   └── utils/            # Utilities
+│   └── requirements.txt
+│
+├── docs/                     # Documentation
+├── tests/                    # Test suites
+└── README.md
+```
 
 ---
 
-## 💬 Let's Connect
+## 🎯 Usage
 
-<div align="center">
+1. **Enter Business Details** - Fill in your business name, industry, and style preferences
+2. **Generate Brand** - Click "Generate My Brand" to create your complete brand kit
+3. **Review Results** - See your logo, colors, website content, and SEO tags
+4. **Download Assets** - Export everything as a ZIP file
 
-[![Email](https://img.shields.io/badge/-Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:your.email@example.com)
-[![Twitter](https://img.shields.io/badge/-Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/yourhandle)
-[![Instagram](https://img.shields.io/badge/-Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/yourhandle)
-[![Dribbble](https://img.shields.io/badge/-Dribbble-EA4C89?style=for-the-badge&logo=dribbble&logoColor=white)](https://dribbble.com/yourhandle)
+---
 
-</div>
+## 📄 License
+
+MIT License - feel free to use this for your projects!
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
@@ -85,6 +152,6 @@ I'm a **Vibe Coder** and **Designer** who believes that great software isn't jus
 
 ### "Code is poetry, design is the rhythm." 
 
-![Visitor Count](https://komarev.com/ghpvc/?username=YOUR_USERNAME&color=6366f1)
+Made with ❤️ using AI
 
 </div>
