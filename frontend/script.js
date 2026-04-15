@@ -16,9 +16,10 @@ form.addEventListener('submit', async (event) => {
     business_name: document.getElementById('businessName').value,
     tagline: document.getElementById('tagline').value,
     industry: document.getElementById('industry').value,
-    logo_style: document.getElementById('logoStyle').value,
     color_scheme: document.getElementById('colorScheme').value,
-    website_template: document.getElementById('websiteTemplate').value
+    // Defaults for hidden UI choices
+    logo_style: 'minimalist',
+    website_template: 'modern'
   };
 
   showLoading(true);
@@ -39,10 +40,17 @@ form.addEventListener('submit', async (event) => {
     }
 
     const json = await response.json();
+    console.log('Backend response:', json);
+    
+    if (!json.success) {
+        throw new Error(json.detail || 'Generation failed on backend');
+    }
+
     currentResults = json.data;
     showLoading(false);
     displayResults(currentResults);
   } catch (error) {
+    console.error('Frontend Error:', error);
     showLoading(false);
     showError(error.message);
   }
@@ -51,7 +59,7 @@ form.addEventListener('submit', async (event) => {
 function showLoading(loading) {
   if (loading) {
     form.style.display = 'none';
-    loadingIndicator.style.display = 'grid';
+    loadingIndicator.style.display = 'flex';
     resultsSection.style.display = 'none';
     designDetails.style.display = 'none';
   } else {
@@ -60,112 +68,110 @@ function showLoading(loading) {
 }
 
 function showError(message) {
-  alert(`Unable to generate brand. ${message}`);
-  form.style.display = 'grid';
+  // Simple but clean alert
+  alert(`Generation issue: ${message}`);
+  form.style.display = 'flex';
 }
 
 function displayResults(data) {
+  // Populate Logo
   if (data.logo_url) {
-    document.getElementById('logoImage').src = data.logo_url;
+    const logoImg = document.getElementById('logoImage');
+    logoImg.src = data.logo_url;
     document.getElementById('logoDownload').href = data.logo_download_url || data.logo_url;
   }
 
-  document.getElementById('themeName').textContent = data.theme_name || 'Brand palette';
+  // General Labels
+  document.getElementById('themeName').textContent = data.theme_name || 'Design Ethos';
   document.getElementById('fontFamily').textContent = data.font_family || 'Inter';
 
+  // Palette Logic
   const paletteRow = document.getElementById('paletteRow');
   paletteRow.innerHTML = '';
-
   if (data.design_palette) {
-    const palette = data.design_palette;
+    const p = data.design_palette;
     const chips = [
-      { label: 'Primary', color: palette.primary },
-      { label: 'Secondary', color: palette.secondary },
-      { label: 'Accent', color: palette.accent },
-      { label: 'Surface', color: palette.surface },
+      { label: 'Primary', color: p.primary },
+      { label: 'Sec', color: p.secondary },
+      { label: 'Acc', color: p.accent },
+      { label: 'Surf', color: p.surface },
     ];
-
-    chips.forEach((item) => {
-      const chip = document.createElement('div');
-      chip.className = 'palette-chip';
-      chip.style.background = item.color;
-      chip.textContent = item.label;
-      paletteRow.appendChild(chip);
+    chips.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'palette-chip';
+      div.style.background = c.color;
+      div.textContent = c.label;
+      paletteRow.appendChild(div);
     });
   }
 
-  const paletteSuggestions = document.getElementById('paletteSuggestions');
-  paletteSuggestions.innerHTML = '';
+  // Palette Suggestions
+  const suggestions = document.getElementById('paletteSuggestions');
+  suggestions.innerHTML = '';
   if (Array.isArray(data.palette_suggestions)) {
-    data.palette_suggestions.slice(0, 3).forEach((item) => {
-      const block = document.createElement('div');
-      block.className = 'palette-suggestion';
-      const swatch = document.createElement('div');
-      swatch.className = 'palette-swatch-small';
-      swatch.style.background = item.palette.primary;
-      const label = document.createElement('div');
-      label.innerHTML = `<strong>${item.palette.name}</strong><br /><span style="color:#475569;">${item.palette.primary}, ${item.palette.secondary}</span>`;
-      block.appendChild(swatch);
-      block.appendChild(label);
-      paletteSuggestions.appendChild(block);
+    data.palette_suggestions.slice(0, 2).forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'palette-suggestion';
+        div.innerHTML = `<div class="palette-swatch-small" style="background:${s.palette.primary}"></div> <span>${s.palette.name}</span>`;
+        suggestions.appendChild(div);
     });
   }
 
-  const seoMetadata = document.getElementById('seoMetadata');
-  seoMetadata.innerHTML = '';
+  // SEO Metadata
+  const seo = document.getElementById('seoMetadata');
+  seo.innerHTML = '';
   if (data.seo_tags) {
-    const seoKeys = [
-      { title: 'Title', value: data.seo_tags.title },
-      { title: 'Description', value: data.seo_tags.description },
-      { title: 'Keywords', value: Array.isArray(data.seo_tags.keywords) ? data.seo_tags.keywords.join(', ') : data.seo_tags.keywords },
-      { title: 'OG Title', value: data.seo_tags.og_title },
-      { title: 'OG Description', value: data.seo_tags.og_description }
-    ];
-
-    seoKeys.forEach((item) => {
-      if (item.value) {
-        const p = document.createElement('p');
-        p.innerHTML = `<strong>${item.title}</strong><br>${item.value}`;
-        seoMetadata.appendChild(p);
-      }
-    });
+      const tags = [
+          { k: 'Title', v: data.seo_tags.title },
+          { k: 'Desk', v: data.seo_tags.description }
+      ];
+      tags.forEach(t => {
+          if (t.v) {
+              const p = document.createElement('p');
+              p.innerHTML = `<strong>${t.k}:</strong> ${t.v}`;
+              seo.appendChild(p);
+          }
+      });
   }
 
-  const featureList = document.getElementById('featureList');
-  featureList.innerHTML = '';
+  // System Specs
+  const featList = document.getElementById('featureList');
+  featList.innerHTML = '';
   if (Array.isArray(data.features)) {
-    data.features.forEach((feature) => {
-      const li = document.createElement('li');
-      li.textContent = `${feature.title}: ${feature.description}`;
-      featureList.appendChild(li);
-    });
+      data.features.slice(0, 4).forEach(f => {
+          const li = document.createElement('li');
+          li.textContent = f.title;
+          featList.appendChild(li);
+      });
   }
 
-  const brandTone = document.getElementById('brandTone');
-  if (data.template_description) {
-    brandTone.textContent = data.template_description;
-  } else {
-    brandTone.textContent = 'Modern, professional, and well structured for business growth.';
-  }
+  const tone = document.getElementById('brandTone');
+  tone.textContent = data.template_description || 'Sophisticated, modern, and high-performance design.';
 
-  resultsSection.style.display = 'block';
-  designDetails.style.display = 'grid';
+  // Show Sections
+  resultsSection.style.display = 'grid';
+  designDetails.style.display = 'block';
+
+  // Final Polish: Scroll to results
+  resultsSection.scrollIntoView({ behavior: 'smooth' });
+  
+  // Refresh icons
+  if (window.lucide) {
+      lucide.createIcons();
+  }
 }
 
 function showWebsitePreview() {
   if (!currentResults || !currentResults.website_html) {
-    alert('Website HTML is not available yet. Please generate a brand first.');
+    alert('Preview pending...');
     return;
   }
-
   const modal = document.getElementById('websiteModal');
-  const preview = document.getElementById('websitePreview');
-  preview.innerHTML = '';
-
+  const frame = document.getElementById('websitePreview');
+  frame.innerHTML = '';
   const iframe = document.createElement('iframe');
   iframe.srcdoc = currentResults.website_html;
-  preview.appendChild(iframe);
-
+  frame.appendChild(iframe);
   modal.classList.add('active');
 }
 
@@ -173,29 +179,19 @@ function closeWebsitePreview() {
   document.getElementById('websiteModal').classList.remove('active');
 }
 
-function resetForm() {
-  form.reset();
-  resultsSection.style.display = 'none';
-  designDetails.style.display = 'none';
-  form.style.display = 'grid';
-  currentResults = null;
-}
-
 function scrollToForm() {
-  document.getElementById('generationForm').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('generationForm').scrollIntoView({ behavior: 'smooth' });
 }
 
-window.addEventListener('click', (event) => {
-  const modal = document.getElementById('websiteModal');
-  if (event.target === modal) {
-    closeWebsitePreview();
-  }
+window.addEventListener('click', (e) => {
+    if (e.target.id === 'websiteModal') closeWebsitePreview();
 });
 
+// Mock connection check
 window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    await fetch(`${API_URL}/health`);
-  } catch (error) {
-    console.warn('Cannot connect to API. Make sure the backend is running on http://localhost:8000');
-  }
+    try {
+        await fetch(`${API_URL}/health`);
+    } catch(e) {
+        console.warn('Backend offline');
+    }
 });

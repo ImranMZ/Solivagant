@@ -49,19 +49,17 @@ Create SEO metadata in JSON format with the following fields:
 Respond ONLY with valid JSON, no other text."""
 
         try:
-            message = self.client.messages.create(
+            completion = self.client.chat.completions.create(
                 model=self.model,
-                max_tokens=500,
                 messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=500,
             )
             
             # Parse response
-            response_text = message.content[0].text
+            response_text = completion.choices[0].message.content
             
             # Extract JSON from response
             try:

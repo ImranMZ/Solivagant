@@ -5,176 +5,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Brand & Website Generator</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <div class="app-shell">
-        <header class="hero-panel">
-            <div class="hero-copy">
-                <span class="eyebrow">AI-powered brand studio</span>
-                <h1>Launch a professional brand identity and website in seconds.</h1>
-                <p>Generate a polished logo, color palette, SEO-ready copy, and a modern landing page tailored to your business.</p>
-                <div class="hero-actions">
-                    <button class="button-primary" onclick="document.getElementById('businessName').focus()">Start now</button>
-                    <button class="button-secondary" onclick="scrollToForm()">See how it works</button>
+    <div class="bg-mesh"></div>
+    
+    <header class="glass-nav">
+        <div class="nav-content">
+            <div class="brand">
+                <i data-lucide="sparkles" class="logo-icon"></i>
+                <span class="brand-name">Solivagant</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="scrollToForm()">Create</button>
+                <div class="user-pill">
+                    <span>Pro</span>
                 </div>
             </div>
-            <div class="hero-panel-card">
-                <div class="pill-group">
-                    <span class="pill">Professional</span>
-                    <span class="pill">Unique layout</span>
-                    <span class="pill">Color palettes</span>
-                </div>
-                <div class="card-content">
-                    <h2>Your next website starts here</h2>
-                    <p>Choose your industry, brand tone, and style. The system creates a responsive product page with polished visuals and real design direction.</p>
-                </div>
+        </div>
+    </header>
+
+    <main class="app-stage">
+        <div class="hero-text">
+            <h1>Create your brand.</h1>
+            <p>High-end identity generation powered by AI.</p>
+        </div>
+
+        <section class="glass-card form-section" id="generationForm">
+            <div class="card-header">
+                <h2>Build Identity</h2>
+                <div class="status-indicator"><span class="dot"></span>Live</div>
             </div>
-        </header>
-
-        <main class="controls-grid">
-            <section class="panel form-panel" id="generationForm">
-                <div class="panel-heading">
-                    <div>
-                        <p class="panel-title">Create your brand</p>
-                        <p class="panel-subtitle">Enter the essentials and generate a complete asset package.</p>
+            <form id="brandForm" class="bento-form">
+                <div class="input-stack">
+                    <div class="input-field">
+                        <label>Business Name</label>
+                        <input type="text" id="businessName" placeholder="e.g. Luminar" required />
                     </div>
-                    <div class="badge">Live</div>
-                </div>
-
-                <form id="brandForm">
-                    <div class="input-row">
-                        <label for="businessName">Business Name</label>
-                        <input type="text" id="businessName" name="businessName" required placeholder="e.g., TechVision" />
+                    <div class="input-field">
+                        <label>Tagline</label>
+                        <input type="text" id="tagline" placeholder="e.g. Future focused" required />
                     </div>
-
-                    <div class="input-row">
-                        <label for="tagline">Tagline</label>
-                        <input type="text" id="tagline" name="tagline" required placeholder="e.g., Innovation meets elegance" />
+                </div>
+                <div class="input-stack">
+                    <div class="input-field">
+                        <label>Industry</label>
+                        <select id="industry" required>
+                            <option value="Technology">Technology</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Creative">Creative</option>
+                        </select>
                     </div>
-
-                    <div class="input-row grouped">
-                        <div>
-                            <label for="industry">Industry</label>
-                            <select id="industry" name="industry" required>
-                                <option value="">Select industry</option>
-                                <option value="Technology">Technology</option>
-                                <option value="Finance">Finance</option>
-                                <option value="Healthcare">Healthcare</option>
-                                <option value="E-commerce">E-commerce</option>
-                                <option value="Education">Education</option>
-                                <option value="Creative">Creative/Design</option>
-                                <option value="Consulting">Consulting</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="colorScheme">Color Style</label>
-                            <select id="colorScheme" name="colorScheme" required>
-                                <option value="modern">Modern Blue</option>
-                                <option value="professional">Professional Slate</option>
-                                <option value="vibrant">Vibrant Bloom</option>
-                                <option value="elegant">Elegant Violet</option>
-                            </select>
-                        </div>
+                    <div class="input-field">
+                        <label>Color Style</label>
+                        <select id="colorScheme" required>
+                            <option value="modern">Modern Blue</option>
+                            <option value="professional">Professional Slate</option>
+                            <option value="vibrant">Vibrant Bloom</option>
+                        </select>
                     </div>
-
-                    <div class="input-row grouped">
-                        <div>
-                            <label for="logoStyle">Logo Style</label>
-                            <select id="logoStyle" name="logoStyle" required>
-                                <option value="minimalist">Minimalist</option>
-                                <option value="modern">Modern</option>
-                                <option value="playful">Playful</option>
-                                <option value="professional">Professional</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="websiteTemplate">Website Template</label>
-                            <select id="websiteTemplate" name="websiteTemplate" required>
-                                <option value="modern">Modern Launchpad</option>
-                                <option value="classic">Classic Corporate</option>
-                                <option value="creative">Creative Studio</option>
-                                <option value="minimal">Minimal Showcase</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="help-text">Choose the landing page style that best fits your brand.</div>
-
-                    <button type="submit" class="button-primary form-button">Generate Brand</button>
-                </form>
-
-                <div id="loadingIndicator" class="loading" style="display:none;">
-                    <div class="loader"></div>
-                    <p>Generating your brand package. This will take a few seconds.</p>
                 </div>
-            </section>
-
-            <section class="panel results-panel" id="resultsSection" style="display:none;">
-                <div class="panel-heading">
-                    <div>
-                        <p class="panel-title">Brand results</p>
-                        <p class="panel-subtitle">Review your generated assets and launch-ready website preview.</p>
-                    </div>
-                    <button class="button-secondary" onclick="resetForm()">Create another</button>
-                </div>
-
-                <div class="asset-cards">
-                    <article class="asset-card">
-                        <h3>Logo</h3>
-                        <div class="logo-preview"><img id="logoImage" src="" alt="Generated logo" /></div>
-                        <a id="logoDownload" href="#" download class="button-secondary stretch">Download Logo</a>
-                    </article>
-
-                    <article class="asset-card">
-                        <h3>Design palette</h3>
-                        <div class="palette-row" id="paletteRow"></div>
-                        <p class="palette-name" id="themeName"></p>
-                        <div class="palette-suggestions" id="paletteSuggestions"></div>
-                    </article>
-
-                    <article class="asset-card">
-                        <h3>Website preview</h3>
-                        <p>Responsive website design built to reflect your business and brand palette.</p>
-                        <button class="button-primary stretch" onclick="showWebsitePreview()">View Website</button>
-                    </article>
-
-                    <article class="asset-card wide-card">
-                        <h3>SEO metadata</h3>
-                        <div id="seoMetadata" class="seo-info"></div>
-                    </article>
-                </div>
-            </section>
-        </main>
-
-        <section class="details-panel" id="designDetails" style="display:none;">
-            <div class="section-header">
-                <h2>Design details</h2>
-                <p>These details help you follow the brand system across your website and marketing.</p>
-            </div>
-            <div class="details-grid">
-                <div class="detail-card">
-                    <h4>Primary font</h4>
-                    <p id="fontFamily"></p>
-                </div>
-                <div class="detail-card">
-                    <h4>Brand tone</h4>
-                    <p id="brandTone">Modern, professional, and well structured for business growth.</p>
-                </div>
-                <div class="detail-card full-card">
-                    <h4>Features</h4>
-                    <ul id="featureList"></ul>
-                </div>
+                <button type="submit" class="glow-button">Generate Assets</button>
+            </form>
+            
+            <div id="loadingIndicator" class="glass-loading" style="display:none;">
+                <div class="ios-spinner"></div>
+                <p>Synthesizing Design...</p>
             </div>
         </section>
 
-        <div id="websiteModal" class="modal">
-            <div class="modal-content">
-                <button class="close" onclick="closeWebsitePreview()">Close</button>
-                <div class="website-preview" id="websitePreview"></div>
+        <section id="resultsSection" class="results-grid" style="display:none;">
+            <!-- Logo Card -->
+            <article class="glass-card bento-card logo-card" id="logoCard">
+                <div class="card-tag">Logo</div>
+                <div class="logo-display">
+                    <img id="logoImage" src="" alt="Logo" />
+                </div>
+                <div class="card-footer">
+                    <a id="logoDownload" href="#" download class="icon-btn"><i data-lucide="download"></i></a>
+                </div>
+            </article>
+
+            <!-- Palette Card -->
+            <article class="glass-card bento-card palette-card" id="paletteCard">
+                <div class="card-tag">Palette</div>
+                <div id="paletteRow" class="palette-viz"></div>
+                <div class="palette-info">
+                    <h3 id="themeName"></h3>
+                    <div id="paletteSuggestions"></div>
+                </div>
+            </article>
+
+            <!-- Website Preview Card -->
+            <article class="glass-card bento-card website-card" id="websiteCard">
+                <div class="card-tag">Product Landing</div>
+                <div class="preview-mock">
+                    <div class="mock-content"></div>
+                    <button onclick="showWebsitePreview()" class="blur-btn">Preview Site</button>
+                </div>
+            </article>
+
+            <!-- Metadata Card -->
+            <article class="glass-card bento-card seo-card" id="seoCard">
+                <div class="card-tag">SEO Meta</div>
+                <div id="seoMetadata" class="seo-scroll"></div>
+            </article>
+
+            <!-- Design Specs Card (Wide) -->
+            <article class="glass-card bento-card specs-card full-width" id="designDetails">
+                <div class="card-tag">System Specs</div>
+                <div class="specs-content">
+                    <div class="spec-row">
+                        <div class="spec-label">Font Family</div>
+                        <div id="fontFamily" class="spec-value"></div>
+                    </div>
+                    <div class="spec-row">
+                        <div class="spec-label">Brand Tone</div>
+                        <div id="brandTone" class="spec-value"></div>
+                    </div>
+                    <div class="spec-row">
+                        <div class="spec-label">Core Features</div>
+                        <ul id="featureList" class="spec-list"></ul>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- Modal for Website Preview -->
+    <div id="websiteModal" class="glass-modal">
+        <div class="modal-surface">
+            <div class="modal-top">
+                <span>Site Preview</span>
+                <button class="close-pill" onclick="closeWebsitePreview()">Close</button>
             </div>
+            <div id="websitePreview" class="iframe-wrap"></div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
