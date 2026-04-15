@@ -1,90 +1,79 @@
-<div align="center">
+# AI Brand & Website Generator
 
-# ✨ Hello, I'm a Vibe Coder & Designer 🎨
+A lightweight full-stack project that generates brand identity assets, website preview HTML, and SEO metadata from user inputs.
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-Visit%20Now-blue?style=for-the-badge&logo=google-chrome)](#)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow%20Me-black?style=for-the-badge&logo=github)](#)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](#)
+## What this repo contains
 
-### 🚀 Where Code Meets Creativity | AI Enthusiast | UI/UX Lover
+- `backend/` — FastAPI backend powering generation endpoints
+- `frontend/` — static HTML/CSS/JS frontend for the UI
+- `tests/` — test suite for backend sanity checks
+- `PROJECT_ARCHITECTURE.md` — architecture notes and folder structure
+- `python-package.yml` — package metadata or CI configuration
 
-</div>
+## Features
 
----
+- Generate a brand logo preview based on business name, industry, and style
+- Produce a responsive landing page HTML preview with brand palette and template metadata
+- Create SEO-friendly metadata for page title, description, keywords, and social sharing
+- Provide a logo download endpoint for easier brand asset export
 
-## 🌟 About Me
+## Run locally
 
-```python
-class VibeCoder:
-    def __init__(self):
-        self.name = "Creative Developer"
-        self.passion = ["Design", "Code", "AI Tools"]
-        self.mission = "Building beautiful digital experiences"
-    
-    def create(self):
-        return "✨ Magic happens here ✨"
+### Backend
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
 ```
 
-I'm a **Vibe Coder** and **Designer** who believes that great software isn't just about functionality—it's about the *feeling* it creates. I blend clean code with stunning visuals to craft websites and tools that users love to interact with.
+### Frontend
+Open `frontend/index.html` directly in your browser, or serve it from a local static server:
 
----
+```bash
+cd frontend
+python -m http.server 3000
+```
 
-## 🛠️ What I Do
+Then visit `http://localhost:3000`.
 
-<div align="center">
+## API Endpoints
 
-| 🎨 **Graphic Design** | 💻 **Web Development** | 🤖 **AI Tools** |
-|:---:|:---:|:---:|
-| Branding & Logos | Interactive Websites | AI-Powered Solutions |
-| UI/UX Design | Responsive Layouts | Automation & Bots |
-| Visual Storytelling | Modern Frameworks | Creative AI Experiments |
+- `GET /api/health` — health check
+- `POST /api/generate` — generate brand assets and website HTML
+- `GET /api/logo` — proxy download for generated logo
 
-</div>
+## Project structure
 
----
+```text
+.
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── utils/
+│   ├── requirements.txt
+│   └── .env
+├── frontend/
+│   ├── index.html
+│   ├── styles.css
+│   └── script.js
+├── tests/
+├── PROJECT_ARCHITECTURE.md
+├── README.md
+└── python-package.yml
+```
 
-## ⚡ Tech Stack & Tools
+## Notes
 
-<div align="center">
+- Keep `backend/.env` out of source control. The repo `.gitignore` already excludes `.env` files.
+- If you want frontend and backend on separate ports, update `API_URL` in `frontend/script.js`.
 
-### Languages & Frameworks
-![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![React](https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black)
+## Next steps
 
-### Design Tools
-![Figma](https://img.shields.io/badge/-Figma-F24E1E?style=flat-square&logo=figma&logoColor=white)
-![Adobe Photoshop](https://img.shields.io/badge/-Photoshop-31A8FF?style=flat-square&logo=adobe-photoshop&logoColor=white)
-![Adobe Illustrator](https://img.shields.io/badge/-Illustrator-FF9A00?style=flat-square&logo=adobe-illustrator&logoColor=white)
-
-### AI & More
-![TensorFlow](https://img.shields.io/badge/-TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
-![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)
-![VS Code](https://img.shields.io/badge/-VS%20Code-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white)
-
-</div>
-
----
-
-## 💬 Let's Connect
-
-<div align="center">
-
-[![Email](https://img.shields.io/badge/-Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:your.email@example.com)
-[![Twitter](https://img.shields.io/badge/-Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/yourhandle)
-[![Instagram](https://img.shields.io/badge/-Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/yourhandle)
-[![Dribbble](https://img.shields.io/badge/-Dribbble-EA4C89?style=for-the-badge&logo=dribbble&logoColor=white)](https://dribbble.com/yourhandle)
-
-</div>
-
----
-
-<div align="center">
-
-### "Code is poetry, design is the rhythm." 
-
-![Visitor Count](https://komarev.com/ghpvc/?username=YOUR_USERNAME&color=6366f1)
-
-</div>
+- Add detailed deploy instructions for production
+- Add automated CI workflow for tests and linting
+- Provide a simple export ZIP feature for generated brand kits
