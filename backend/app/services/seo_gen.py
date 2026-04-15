@@ -13,7 +13,7 @@ class SEOGenerator:
     
     def __init__(self):
         self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model = os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile")
+        self.model = os.getenv("GROQ_MODEL", "llama3-8b-8192")
     
     def generate_seo(
         self,
