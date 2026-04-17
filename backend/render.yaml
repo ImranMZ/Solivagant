@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: solivagant-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      # Set GROQ_API_KEY in Render dashboard for security
+      - key: GROQ_API_KEY
+        value: ""
