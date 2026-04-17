@@ -1,43 +1,44 @@
-# Backend — AI Brand & Website Generator
+# Solivagant - AI Brand Designer
 
-This backend provides the API for generating brand assets, website HTML, and SEO metadata.
+An AI-powered brand identity generator that creates complete brand assets including logos, websites, social media posts, and brand kits using 100% Groq AI - no external image APIs required.
 
-## Stack
-- Python 3.10+
-- FastAPI
-- Pydantic
-- Uvicorn
-- python-dotenv
+## Features
 
-## Key Files
-- `app/main.py` — FastAPI application entrypoint
-- `app/routes/generate.py` — `/api/generate` endpoint
-- `app/routes/health.py` — `/api/health` health check
-- `app/routes/logo.py` — `/api/logo` logo proxy/download endpoint
-- `app/services/logo_gen.py` — logo prompt builder
-- `app/services/website_gen.py` — stable landing page HTML generator
-- `app/services/seo_gen.py` — SEO metadata helper
-- `app/models/request.py` — request validation model
-- `app/utils/prompts.py` — prompt templates and utilities
+- **AI Logo Generation** - Generate unique SVG logos using Groq LLM
+- **AI Website Generation** - Create complete landing page HTML with AI-generated content
+- **Social Media Posts** - AI-generated poster designs for Twitter, LinkedIn, and Instagram
+- **Brand Kit** - Color palettes, email signatures, business cards, font recommendations
+- **Multiple Vibe Styles** - Professional, Playful, Premium, Minimal, Bold
 
-## Setup
+## Quick Start
+
+### Backend
 ```bash
 cd backend
-python -m venv venv
-venv\Scripts\activate
 pip install -r requirements.txt
+# Add GROQ_API_KEY to backend/.env
+uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
-## Run
+### Frontend
 ```bash
-uvicorn app.main:app --reload
+cd frontend
+python -m http.server 3000
 ```
 
-## API
-- `GET /api/health`
-- `POST /api/generate`
-- `GET /api/logo`
+Open http://127.0.0.1:3000
 
-## Notes
-- Configure `.env` in `backend/.env` for API keys and environment variables.
-- CORS is enabled for development so the frontend can call the API from `http://localhost:8000`.
+## API Endpoints
+
+- `GET /api/health` - Health check
+- `POST /api/generate` - Generate full brand identity
+- `GET /api/vibes` - List vibe styles
+
+## Tech Stack
+
+- Backend: FastAPI + Groq LLM
+- Frontend: Vanilla HTML/CSS/JS (iOS dark theme)
+
+## License
+
+MIT
