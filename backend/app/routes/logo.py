@@ -1,27 +1,24 @@
-"""Logo proxy route for downloading generated logo images."""
-from fastapi import APIRouter, HTTPException, Response
-from urllib.parse import unquote_plus
+"""Logo routes for generated logo assets."""
+
+from fastapi import APIRouter, HTTPException
 from ..services.logo_gen import LogoGenerator
 
 router = APIRouter()
 
 
 @router.get("/logo")
-def download_logo(
+def get_logo_svg(
     business_name: str,
     industry: str,
     style: str = "minimalist",
-    color_scheme: str = "modern"
+    color_scheme: str = "modern",
 ):
-    """Download the generated logo image as PNG bytes."""
+    """Get the generated logo as SVG."""
     try:
         generator = LogoGenerator()
-        image_bytes = generator.fetch_logo_bytes(
-            business_name=business_name,
-            industry=industry,
-            style=style,
-            color_scheme=color_scheme or None
+        svg = generator.get_logo_html(
+            business_name=business_name, industry=industry, style=style
         )
-        return Response(content=image_bytes, media_type="image/png")
+        return {"logo_svg": svg}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

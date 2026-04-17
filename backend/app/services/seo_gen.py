@@ -10,29 +10,24 @@ import json
 
 class SEOGenerator:
     """Service for generating SEO metadata"""
-    
+
     def __init__(self):
         self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model = os.getenv("GROQ_MODEL", "llama3-8b-8192")
-    
-    def generate_seo(
-        self,
-        business_name: str,
-        tagline: str,
-        industry: str
-    ) -> dict:
+        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+
+    def generate_seo(self, business_name: str, tagline: str, industry: str) -> dict:
         """
         Generate SEO metadata
-        
+
         Args:
             business_name: Name of the business
             tagline: Business tagline
             industry: Industry type
-            
+
         Returns:
             Dictionary with SEO metadata
         """
-        
+
         prompt = f"""Generate SEO metadata for a website for {business_name}.
         
 Tagline: {tagline}
@@ -51,16 +46,14 @@ Respond ONLY with valid JSON, no other text."""
         try:
             completion = self.client.chat.completions.create(
                 model=self.model,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
+                messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
                 max_tokens=500,
             )
-            
+
             # Parse response
             response_text = completion.choices[0].message.content
-            
+
             # Extract JSON from response
             try:
                 # Try direct JSON parsing first
@@ -68,18 +61,19 @@ Respond ONLY with valid JSON, no other text."""
             except json.JSONDecodeError:
                 # If that fails, extract JSON from text
                 import re
-                json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+
+                json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
                 if json_match:
                     seo_data = json.loads(json_match.group())
                 else:
                     seo_data = self._get_default_seo(business_name, tagline)
-            
+
             return seo_data
-            
+
         except Exception as e:
             print(f"Error generating SEO: {e}")
             return self._get_default_seo(business_name, tagline)
-    
+
     def _get_default_seo(self, business_name: str, tagline: str) -> dict:
         """Get default SEO metadata if generation fails"""
         return {
@@ -91,9 +85,9 @@ Respond ONLY with valid JSON, no other text."""
                 "professional",
                 "digital presence",
                 "web solution",
-                "modern design"
+                "modern design",
             ],
             "og_title": business_name,
             "og_description": tagline,
-            "twitter_card": "summary_large_image"
+            "twitter_card": "summary_large_image",
         }
