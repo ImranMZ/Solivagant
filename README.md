@@ -1,10 +1,10 @@
 # Solivagant - AI Brand Designer
 
-An AI-powered brand identity generator that creates complete brand assets including logos, websites, social media posts, and brand kits using 100% Groq AI - no external image APIs required.
+An AI-powered brand identity generator that creates complete brand assets including logos, websites, social media posts, and brand kits using AI
 
 ## Features
 
-- **AI Logo Generation** - Generate unique SVG logos using Groq LLM
+- **AI Logo Generation** - Generate unique SVG logos using LLM
 - **AI Website Generation** - Create complete landing page HTML with AI-generated content
 - **Social Media Posts** - AI-generated poster designs for Twitter, LinkedIn, and Instagram
 - **Brand Kit** - Color palettes, email signatures, business cards, font recommendations
@@ -38,30 +38,11 @@ Open http://127.0.0.1:3000
 
 ## Tech Stack
 
-- **Backend**: FastAPI + Groq LLM
+- **Backend**: FastAPI + LLM
 - **Frontend**: Vanilla HTML/CSS/JS (iOS dark theme)
 - **No external image APIs** - 100% AI-generated
 
-## Project Structure
 
-```
-Solivagant/
-â”œâ”€â”€ backend/
-â”‚   â”œâ”€â”€ app/
-â”‚   â”‚   â”œâ”€â”€ main.py
-â”‚   â”‚   â”œâ”€â”€ models/
-â”‚   â”‚   â”œâ”€â”€ routes/
-â”‚   â”‚   â””â”€â”€ services/
-â”‚   â”‚       â”œâ”€â”€ logo_gen.py
-â”‚   â”‚       â”œâ”€â”€ website_gen_ai.py
-â”‚   â”‚       â”œâ”€â”€ social_posts_gen.py
-â”‚   â”‚       â””â”€â”€ seo_gen.py
-â”‚   â”œâ”€â”€ .env
-â”‚   â””â”€â”€ requirements.txt
-â”œâ”€â”€ frontend/
-â”‚   â””â”€â”€ index.html
-â””â”€â”€ tests/
-```
 
 ## Environment Variables
 
