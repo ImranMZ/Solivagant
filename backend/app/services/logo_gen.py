@@ -3,39 +3,30 @@ Logo Generation Service using Groq API
 Generates detailed SVG logos with brand colors - 100% AI
 """
 
-import os
 import json
-from groq import Groq
+import base64
+import re
+from ..core.ai_client import get_ai_client
 
 
 class LogoGenerator:
     """Service for generating detailed SVG logos using Groq LLM"""
 
     def __init__(self):
-        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+        self.ai_client = get_ai_client()
+        self._cache: dict[str, str] = {}
 
-    def generate_logo_svg(
+    def _build_prompt(
         self,
         business_name: str,
         industry: str,
-        style: str = "minimalist",
-        brand_colors: dict = None,
+        style: str,
+        colors: dict,
     ) -> str:
-        """
-        Generate detailed SVG logo using Groq LLM with brand colors.
-        """
-        colors = brand_colors or {
-            "primary": "#3B82F6",
-            "secondary": "#8B5CF6",
-            "accent": "#10B981",
-        }
-
         primary = colors.get("primary", "#3B82F6")
         secondary = colors.get("secondary", "#8B5CF6")
         accent = colors.get("accent", "#10B981")
-
-        prompt = f"""Create a detailed, professional SVG logo for {business_name}.
+        return f"""Create a detailed, professional SVG logo for {business_name}.
 
 COMPANY: {business_name}
 INDUSTRY: {industry}
@@ -56,30 +47,79 @@ REQUIREMENTS:
 
 Return ONLY valid SVG code wrapped in ```svg``` tags. No explanations."""
 
+    def generate_logo_svg(
+        self,
+        business_name: str,
+        industry: str,
+        style: str = "minimalist",
+        brand_colors: dict = None,
+    ) -> str:
+        """Generate detailed SVG logo using Groq LLM with brand colors."""
+        colors = brand_colors or {
+            "primary": "#3B82F6",
+            "secondary": "#8B5CF6",
+            "accent": "#10B981",
+        }
+
+        cache_key = f"{business_name}:{industry}:{style}:{json.dumps(colors, sort_keys=True)}"
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+
+        prompt = self._build_prompt(business_name, industry, style, colors)
+        primary = colors.get("primary", "#3B82F6")
+        secondary = colors.get("secondary", "#8B5CF6")
+        accent = colors.get("accent", "#10B981")
+
         try:
-            completion = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an expert logo designer. Create stunning, professional SVG logos. Only output SVG code.",
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.8,
+            response_text = self.ai_client.generate(
+                system_prompt="You are an expert logo designer. Create stunning, professional SVG logos. Only output SVG code.",
+                user_prompt=prompt,
                 max_tokens=2500,
+                temperature=0.8,
             )
-
-            response_text = completion.choices[0].message.content
-            return self._extract_svg(
-                response_text, business_name, primary, secondary, accent
-            )
-
+            svg = self._extract_svg(response_text, business_name, primary, secondary, accent)
+            self._cache[cache_key] = svg
+            return svg
         except Exception as e:
             print(f"Error generating logo: {e}")
-            return self._get_detailed_fallback(
-                business_name, primary, secondary, accent
-            )
+            return self._get_detailed_fallback(business_name, primary, secondary, accent)
+
+    def generate_all(
+        self,
+        business_name: str,
+        industry: str,
+        style: str = "minimalist",
+        brand_colors: dict = None,
+    ) -> dict:
+        """
+        Generate SVG and data URL in a single call (uses cache to avoid double API calls).
+        Returns dict with 'svg' and 'data_url'.
+        """
+        svg = self.generate_logo_svg(business_name, industry, style, brand_colors)
+        encoded = base64.b64encode(svg.encode()).decode()
+        data_url = f"data:image/svg+xml;base64,{encoded}"
+        return {"svg": svg, "data_url": data_url}
+
+    def get_logo_html(
+        self,
+        business_name: str,
+        industry: str,
+        style: str = "minimalist",
+        brand_colors: dict = None,
+    ) -> str:
+        """Get logo as inline HTML/SVG (alias for generate_logo_svg)."""
+        return self.generate_logo_svg(business_name, industry, style, brand_colors)
+
+    def get_logo_data_url(
+        self,
+        business_name: str,
+        industry: str,
+        style: str = "minimalist",
+        brand_colors: dict = None,
+    ) -> str:
+        """Get logo as data URL (uses cache to avoid extra API call)."""
+        result = self.generate_all(business_name, industry, style, brand_colors)
+        return result["data_url"]
 
     def _extract_svg(
         self,
@@ -90,12 +130,9 @@ Return ONLY valid SVG code wrapped in ```svg``` tags. No explanations."""
         accent: str,
     ) -> str:
         """Extract SVG code from response."""
-        import re
-
         svg_match = re.search(r"```svg\s*(.*?)\s*```", response_text, re.DOTALL)
         if svg_match:
             svg = svg_match.group(1).strip()
-            # Ensure viewBox
             if "viewBox" not in svg:
                 svg = svg.replace("<svg", '<svg viewBox="0 0 400 400"')
             return svg
@@ -146,27 +183,3 @@ Return ONLY valid SVG code wrapped in ```svg``` tags. No explanations."""
     <!-- Subtitle Line -->
     <rect x="100" y="335" width="200" height="3" rx="1.5" fill="url(#bgGrad)" opacity="0.6"/>
 </svg>'''
-
-    def get_logo_html(
-        self,
-        business_name: str,
-        industry: str,
-        style: str = "minimalist",
-        brand_colors: dict = None,
-    ) -> str:
-        """Get logo as inline HTML/SVG"""
-        return self.generate_logo_svg(business_name, industry, style, brand_colors)
-
-    def get_logo_data_url(
-        self,
-        business_name: str,
-        industry: str,
-        style: str = "minimalist",
-        brand_colors: dict = None,
-    ) -> str:
-        """Get logo as data URL"""
-        svg_code = self.generate_logo_svg(business_name, industry, style, brand_colors)
-        import base64
-
-        encoded = base64.b64encode(svg_code.encode()).decode()
-        return f"data:image/svg+xml;base64,{encoded}"

@@ -3,17 +3,16 @@ SEO Generation Service using Groq API
 Generates SEO metadata and tags
 """
 
-import os
-from groq import Groq
 import json
+import re
+from ..core.ai_client import get_ai_client
 
 
 class SEOGenerator:
     """Service for generating SEO metadata"""
 
     def __init__(self):
-        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+        self.ai_client = get_ai_client()
 
     def generate_seo(self, business_name: str, tagline: str, industry: str) -> dict:
         """
@@ -29,7 +28,7 @@ class SEOGenerator:
         """
 
         prompt = f"""Generate SEO metadata for a website for {business_name}.
-        
+
 Tagline: {tagline}
 Industry: {industry}
 
@@ -44,15 +43,12 @@ Create SEO metadata in JSON format with the following fields:
 Respond ONLY with valid JSON, no other text."""
 
         try:
-            completion = self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7,
+            response_text = self.ai_client.generate(
+                system_prompt="You are an SEO expert. Generate concise, effective SEO metadata. Always respond with valid JSON only.",
+                user_prompt=prompt,
                 max_tokens=500,
+                temperature=0.7,
             )
-
-            # Parse response
-            response_text = completion.choices[0].message.content
 
             # Extract JSON from response
             try:
@@ -60,8 +56,6 @@ Respond ONLY with valid JSON, no other text."""
                 seo_data = json.loads(response_text)
             except json.JSONDecodeError:
                 # If that fails, extract JSON from text
-                import re
-
                 json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
                 if json_match:
                     seo_data = json.loads(json_match.group())

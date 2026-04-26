@@ -3,56 +3,18 @@ AI-Powered Website Generation Service using Groq LLM
 Generates unique, context-aware HTML layouts and content
 """
 
-import os
 import json
+import re
 from typing import Dict, List
-from groq import Groq
+from ..core.ai_client import get_ai_client
+from .vibe_engine import get_vibe_config, list_vibes
 
 
 class WebsiteGeneratorAI:
     """AI-powered website generator that creates unique, context-aware landing pages."""
 
-    VIBES = {
-        "premium": {
-            "name": "Premium",
-            "description": "Luxury, sophisticated, high-end aesthetic",
-            "personality": "elegant, exclusive, refined",
-            "layout_style": "spacious, cinematic, dramatic",
-            "font_tier": "editorial",
-        },
-        "playful": {
-            "name": "Playful",
-            "description": "Fun, energetic, approachable design",
-            "personality": "friendly, creative, dynamic",
-            "layout_style": "bouncy, colorful, asymmetrical",
-            "font_tier": "rounded",
-        },
-        "professional": {
-            "name": "Professional",
-            "description": "Trustworthy, corporate, reliable",
-            "personality": "serious, dependable, expert",
-            "layout_style": "structured, balanced, clean",
-            "font_tier": "sans-serif",
-        },
-        "minimal": {
-            "name": "Minimal",
-            "description": "Clean, focused, modern simplicity",
-            "personality": "pure, essential, contemporary",
-            "layout_style": "bare, breathable, intentional",
-            "font_tier": "geometric",
-        },
-        "bold": {
-            "name": "Bold",
-            "description": "Attention-grabbing, confident, memorable",
-            "personality": "strong, assertive, distinctive",
-            "layout_style": "striking, oversized, high-contrast",
-            "font_tier": "display",
-        },
-    }
-
     def __init__(self):
-        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+        self.ai_client = get_ai_client()
 
     def generate_website(
         self,
@@ -60,7 +22,7 @@ class WebsiteGeneratorAI:
         tagline: str,
         industry: str,
         vibe: str = "professional",
-        num_vibes: int = 3,
+        num_vibes: int = 1,
     ) -> Dict[str, object]:
         """Generate a complete AI-powered website."""
 
@@ -76,10 +38,11 @@ class WebsiteGeneratorAI:
     ) -> Dict[str, object]:
         """Generate multiple vibe variations using AI."""
 
-        vibes_to_generate = list(self.VIBES.keys())[:num_vibes]
+        vibes_to_generate = list(list_vibes())[:num_vibes]
         variations = []
 
-        for vibe_key in vibes_to_generate:
+        for vibe_info in vibes_to_generate:
+            vibe_key = vibe_info["key"]
             try:
                 variation = self._generate_single_vibe(
                     business_name, tagline, industry, vibe_key
@@ -95,7 +58,7 @@ class WebsiteGeneratorAI:
                     business_name,
                     tagline,
                     industry,
-                    self.VIBES["professional"],
+                    get_vibe_config("professional"),
                     "professional",
                 )
             ]
@@ -118,24 +81,19 @@ class WebsiteGeneratorAI:
     ) -> Dict[str, object]:
         """Generate a single vibe variation using AI."""
 
-        vibe_config = self.VIBES.get(vibe, self.VIBES["professional"])
-
+        vibe_config = get_vibe_config(vibe)
         prompt = self._build_generation_prompt(
             business_name, tagline, industry, vibe_config
         )
 
         try:
-            completion = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": self._get_system_prompt()},
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.8,
+            response_text = self.ai_client.generate(
+                system_prompt=self._get_system_prompt(),
+                user_prompt=prompt,
                 max_tokens=4000,
+                temperature=0.8,
             )
 
-            response_text = completion.choices[0].message.content
             website_data = self._parse_ai_response(response_text, vibe_config)
             website_data["business_name"] = business_name
 
@@ -204,8 +162,6 @@ Always respond with valid JSON only."""
         try:
             return json.loads(response_text)
         except json.JSONDecodeError:
-            import re
-
             json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
             if json_match:
                 try:
@@ -283,6 +239,8 @@ Always respond with valid JSON only."""
         testimonial_html = self._generate_testimonial(testimonial, colors)
 
         layout_css = self._get_layout_css(layout_variant)
+        font_family = self._get_css_font(vibe_config["font_tier"])
+        border_radius = self._get_border_radius(vibe_config)
 
         return f"""<!DOCTYPE html>
 <html lang="en">
@@ -300,8 +258,8 @@ Always respond with valid JSON only."""
             --accent: {colors["accent"]};
             --bg: {colors["background"]};
             --text: {colors["text"]};
-            --font: {self._get_css_font(vibe_config["font_tier"])};
-            --radius: {self._get_border_radius(vibe_config)};
+            --font: {font_family};
+            --radius: {border_radius};
         }}
 
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
@@ -323,7 +281,7 @@ Always respond with valid JSON only."""
             padding: 20px 0;
             display: flex;
             justify-content: space-between;
-           _align-items: center;
+            align-items: center;
         }}
 
         .logo {{

@@ -3,18 +3,17 @@ Social Media Posts Generation Service using Groq LLM
 100% AI-generated shareable poster designs with brand colors
 """
 
-import os
 import json
+import re
 from typing import List, Dict
-from groq import Groq
+from ..core.ai_client import get_ai_client
 
 
 class SocialPostsGenerator:
     """Service for generating social media posts with detailed poster designs - 100% Groq AI"""
 
     def __init__(self):
-        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+        self.ai_client = get_ai_client()
 
     def generate_posts(
         self,
@@ -34,20 +33,13 @@ class SocialPostsGenerator:
         prompt = self._build_prompt(business_name, tagline, vibe, colors, num_posts)
 
         try:
-            completion = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an expert social media designer. Create stunning HTML/CSS poster designs.",
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.85,
+            response_text = self.ai_client.generate(
+                system_prompt="You are an expert social media designer. Create stunning HTML/CSS poster designs.",
+                user_prompt=prompt,
                 max_tokens=4500,
+                temperature=0.85,
             )
 
-            response_text = completion.choices[0].message.content
             return self._parse_posts(
                 response_text, business_name, tagline, vibe, colors, num_posts
             )
@@ -73,7 +65,7 @@ VIBE STYLE: {vibe}
 
 BRAND COLORS:
 - Primary: {primary}
-- Secondary: {secondary}  
+- Secondary: {secondary}
 - Accent: {accent}
 
 REQUIREMENTS for each UNIQUE poster:
@@ -125,8 +117,6 @@ Make each poster UNIQUE and completely different from others!"""
         try:
             posts = json.loads(response_text)
         except json.JSONDecodeError:
-            import re
-
             json_match = re.search(r"\[.*\]", response_text, re.DOTALL)
             if json_match:
                 try:

@@ -6,7 +6,6 @@ from typing import Optional, List
 from ..models.request import BrandRequest
 from ..services.logo_gen import LogoGenerator
 from ..services.website_gen_ai import WebsiteGeneratorAI
-from ..services.prototype_gen import PrototypeGenerator
 from ..services.seo_gen import SEOGenerator
 from ..services.social_posts_gen import SocialPostsGenerator
 
@@ -132,29 +131,11 @@ def generate_brand(request: BrandRequest):
                 }
             )
 
-        if request.generate_prototype:
-            prototype_gen = PrototypeGenerator()
-            prototype_pages = request.prototype_pages or [
-                "home",
-                "features",
-                "about",
-                "contact",
-            ]
-
-            prototype_result = prototype_gen.generate_prototype(
-                business_name=request.business_name,
-                tagline=request.tagline,
-                industry=request.industry,
-                vibe=request.vibe or "professional",
-                page_types=prototype_pages,
-            )
-
-            response_data["prototype"] = {
-                "screens": prototype_result.get("screens", {}),
-                "navigation_flow": prototype_result.get("navigation_flow", []),
-                "start_page": prototype_result.get("start_page", "home"),
-                "total_screens": prototype_result.get("total_screens", 0),
-            }
+        # Prototype generation temporarily disabled - missing PrototypeGenerator module
+        if False and request.generate_prototype:  # pylint: disable=condition-eval-to-constant
+            # prototype_gen = PrototypeGenerator()
+            # prototype_pages = request.prototype_pages or [...]
+            pass
 
         return {"success": True, "data": response_data}
 
