@@ -33,7 +33,7 @@ Rules:
 - Do NOT wrap in markdown code blocks, return raw SVG only"""
 
         response = self.client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": "You are an expert SVG logo designer. Return raw SVG code only, no markdown."},
                 {"role": "user", "content": prompt},
