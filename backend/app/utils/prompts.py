@@ -1,66 +1,119 @@
-"""
-AI prompt templates for content generation
-"""
-
-
 def get_system_prompt() -> str:
-    """Get the system prompt for the AI"""
-    return """You are an expert brand strategist and web developer. 
-Your task is to create complete brand identities and landing page content.
-Always respond with valid JSON that matches the expected schema.
-Be creative, professional, and ensure consistency across all brand elements."""
+    return """You are an expert brand strategist, logo designer, copywriter, and web developer.
+You create complete brand identities. Always respond with valid JSON.
+Be creative, professional, and consistent across all brand elements."""
 
 
-def get_brand_generation_prompt(business_name: str, industry: str, style: str, tagline: str = None) -> str:
-    """Generate the prompt for brand creation"""
-
-    prompt = f"""Create a complete brand identity for a business with these details:
+def get_brand_generation_prompt(
+    business_name: str,
+    tagline: str,
+    industry: str,
+    target_audience: str,
+    brand_values: list[str],
+    primary_goal: str,
+    tone: str,
+    brand_vibe: str,
+    logo_style: str,
+    color_mood: str,
+    font_personality: str,
+    inspiration: str | None = None,
+) -> str:
+    values_str = ", ".join(brand_values)
+    prompt = f"""Create a complete brand identity with these details:
 - Business Name: {business_name}
+- Tagline: {tagline}
 - Industry: {industry}
-- Style: {style}
+- Target Audience: {target_audience}
+- Brand Values: {values_str}
+- Primary Goal: {primary_goal}
+- Tone: {tone}
+- Brand Vibe: {brand_vibe}
+- Logo Style: {logo_style}
+- Color Mood: {color_mood}
+- Font Personality: {font_personality}
 """
-
-    if tagline:
-        prompt += f"- Tagline: {tagline}\n"
+    if inspiration:
+        prompt += f"- Inspiration: {inspiration}\n"
 
     prompt += """
-Provide the following in valid JSON format:
+Return valid JSON with this EXACT structure:
 {
+  "logo_svg": "<svg>...</svg>",
   "colors": {
-    "primary": "#HEXCODE",
-    "secondary": "#HEXCODE",
-    "accent": "#HEXCODE",
-    "background": "#HEXCODE",
-    "text": "#HEXCODE"
+    "primary": "#HEX",
+    "secondary": "#HEX",
+    "accent": "#HEX",
+    "background": "#HEX",
+    "text": "#HEX"
   },
-  "website_content": {
-    "headline": "Compelling headline (max 60 chars)",
-    "subheadline": "Supporting subheadline (max 120 chars)",
-    "about_section": "Brief about section (2-3 sentences)",
-    "features": ["Feature 1", "Feature 2", "Feature 3"],
-    "cta_text": "Call-to-action button text",
-    "contact_email": "contact@business.com"
+  "website_html": "<!DOCTYPE html>...full landing page html...</html>",
+  "social_posts": {
+    "twitter": "post text under 280 chars",
+    "linkedin": "professional post text",
+    "instagram": "post with hashtags"
   },
   "seo_tags": {
-    "title": "SEO title (max 60 chars)",
-    "description": "Meta description (max 160 chars)",
-    "keywords": ["keyword1", "keyword2", "keyword3"],
-    "og_title": "Open Graph title",
-    "og_description": "Open Graph description",
-    "json_ld": "JSON-LD structured data string"
-  }
+    "title": "under 60 chars",
+    "description": "under 160 chars",
+    "keywords": ["kw1", "kw2", "kw3"],
+    "og_title": "og title",
+    "og_description": "og description"
+  },
+  "brand_guide": "# Brand Guide\\n\\n## Colors... full markdown guide...",
+  "brand_score": 85
 }
 
-Ensure:
-1. Colors work well together and match the {style} style
-2. Content is engaging and professional
-3. SEO tags are optimized for search engines
-4. All text is original and compelling
+Requirements:
+1. logo_svg: Generate a valid, clean SVG logo (inline SVG element). Must use the color palette. Must include the business name.
+2. website_html: Complete responsive HTML page with hero, features section, about, footer. Use the brand colors. Must be a full valid HTML document.
+3. social_posts: Platform-appropriate copy with character limits.
+4. seo_tags: Title ≤60 chars, description ≤160 chars.
+5. brand_guide: Full markdown with color palette, typography, usage guidelines.
+6. brand_score: Integer 0-100 rating the brand completeness.
 """
-
     return prompt
 
 
-def get_logo_prompt(business_name: str, industry: str, style: str) -> str:
-    """Generate prompt for logo creation"""
-    return f"Minimalist logo for {business_name} in {industry}, {style} style, vector art, clean design, professional"
+def get_twist_prompt(
+    business_name: str,
+    tagline: str,
+    industry: str,
+    target_audience: str,
+    brand_values: list[str],
+    primary_goal: str,
+    tone: str,
+    brand_vibe: str,
+    logo_style: str,
+    font_personality: str,
+    inspiration: str | None = None,
+) -> str:
+    values_str = ", ".join(brand_values)
+    prompt = f"""Reimagine this brand with a RANDOM, SURPRISING color mood twist:
+- Business Name: {business_name}
+- Tagline: {tagline}
+- Industry: {industry}
+- Target Audience: {target_audience}
+- Brand Values: {values_str}
+- Primary Goal: {primary_goal}
+- Tone: {tone}
+- Brand Vibe: {brand_vibe}
+- Logo Style: {logo_style}
+- Font Personality: {font_personality}
+"""
+    if inspiration:
+        prompt += f"- Previous Inspiration: {inspiration}\n"
+
+    prompt += """
+Pick a completely different color direction (unexpected palette).
+Return valid JSON with this EXACT structure:
+{
+  "logo_svg": "<svg>...</svg>",
+  "colors": { "primary": "#HEX", "secondary": "#HEX", "accent": "#HEX", "background": "#HEX", "text": "#HEX" },
+  "website_html": "<!DOCTYPE html>...</html>",
+  "social_posts": { "twitter": "...", "linkedin": "...", "instagram": "..." },
+  "seo_tags": { "title": "...", "description": "...", "keywords": [...], "og_title": "...", "og_description": "..." },
+  "brand_guide": "# Brand Guide...",
+  "brand_score": 85
+}
+"""
+    return prompt

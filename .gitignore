@@ -1,19 +1,15 @@
-```
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-env/
 venv/
 .venv/
-.ENV
-.ENV.local
+
+# Environment (actual secrets, not examples)
 .env
 .env.local
-.env.*
-*.env.*
 
 # Build and distribution artifacts
 build/
@@ -43,4 +39,9 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
-```
+
+# Node
+node_modules/
+.next/
+
+*.db

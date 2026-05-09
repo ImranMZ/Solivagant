@@ -1,119 +1,52 @@
-"""
-Logo Generation Service using Pollinations.ai (Free, No API Key Required)
-Generates logos based on text prompts using Pollinations.ai image generation API.
-"""
-
-import httpx
-from urllib.parse import quote
-from typing import Optional
+import json
+from groq import Groq
+import os
 
 
 class LogoGenerator:
-    """Service for generating logos using Pollinations.ai"""
-
-    BASE_URL = "https://image.pollinations.ai/prompt/"
-
     def __init__(self):
-        self.timeout = 30  # seconds
+        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-    async def generate_logo(
+    def generate_svg_logo(
         self,
         business_name: str,
         industry: str,
-        style: str = "minimalist",
-        color_scheme: Optional[str] = None
-    ) -> bytes:
-        """
-        Generate a logo using Pollinations.ai
-
-        Args:
-            business_name: Name of the business
-            industry: Industry/niche of the business
-            style: Style of the logo (e.g., minimalist, modern, playful)
-            color_scheme: Optional color scheme preference
-
-        Returns:
-            Generated logo as bytes (PNG format)
-
-        Raises:
-            httpx.HTTPError: If the API request fails
-        """
-        # Build the prompt for logo generation
-        prompt = f"Minimalist logo for {business_name} in {industry}, {style} style, vector art, clean design, professional"
-
-        if color_scheme:
-            prompt += f", {color_scheme} colors"
-
-        # URL encode the prompt
-        encoded_prompt = quote(prompt)
-        logo_url = f"{self.BASE_URL}{encoded_prompt}"
-
-        # Fetch the generated logo
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
-            response = await client.get(logo_url)
-            response.raise_for_status()
-
-            return response.content
-
-    def generate_logo_sync(
-        self,
-        business_name: str,
-        industry: str,
-        style: str = "minimalist",
-        color_scheme: Optional[str] = None
-    ) -> bytes:
-        """
-        Synchronous version of logo generation
-
-        Args:
-            business_name: Name of the business
-            industry: Industry/niche of the business
-            style: Style of the logo (e.g., minimalist, modern, playful)
-            color_scheme: Optional color scheme preference
-
-        Returns:
-            Generated logo as bytes (PNG format)
-        """
-        # Build the prompt for logo generation
-        prompt = f"Minimalist logo for {business_name} in {industry}, {style} style, vector art, clean design, professional"
-
-        if color_scheme:
-            prompt += f", {color_scheme} colors"
-
-        # URL encode the prompt
-        encoded_prompt = quote(prompt)
-        logo_url = f"{self.BASE_URL}{encoded_prompt}"
-
-        # Fetch the generated logo
-        with httpx.Client(timeout=self.timeout) as client:
-            response = client.get(logo_url)
-            response.raise_for_status()
-
-            return response.content
-
-    def get_logo_url(
-        self,
-        business_name: str,
-        industry: str,
-        style: str = "minimalist",
-        color_scheme: Optional[str] = None
+        logo_style: str,
+        colors: dict,
+        brand_values: list[str],
     ) -> str:
-        """
-        Get the direct URL to the generated logo without downloading it
+        values_str = ", ".join(brand_values)
+        prompt = f"""Generate a clean, professional SVG logo for a business.
 
-        Args:
-            business_name: Name of the business
-            industry: Industry/niche of the business
-            style: Style of the logo
-            color_scheme: Optional color scheme preference
+Business: {business_name}
+Industry: {industry}
+Logo Style: {logo_style}
+Brand Values: {values_str}
+Colors: primary={colors.get('primary')}, secondary={colors.get('secondary')}, accent={colors.get('accent')}
 
-        Returns:
-            Direct URL to the generated logo image
-        """
-        prompt = f"Minimalist logo for {business_name} in {industry}, {style} style, vector art, clean design, professional"
+Rules:
+- Return ONLY valid SVG code wrapped in <svg> tags
+- Use viewBox="0 0 400 400"
+- Include the business name text in the logo
+- Use the brand colors provided
+- Style must be: {logo_style}
+- Do NOT wrap in markdown code blocks, return raw SVG only"""
 
-        if color_scheme:
-            prompt += f", {color_scheme} colors"
+        response = self.client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[
+                {"role": "system", "content": "You are an expert SVG logo designer. Return raw SVG code only, no markdown."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.7,
+            max_tokens=1500,
+        )
 
-        encoded_prompt = quote(prompt)
-        return f"{self.BASE_URL}{encoded_prompt}"
+        svg = response.choices[0].message.content.strip()
+        if svg.startswith("```svg"):
+            svg = svg[7:]
+        if svg.startswith("```"):
+            svg = svg[3:]
+        if svg.endswith("```"):
+            svg = svg[:-3]
+        return svg.strip()

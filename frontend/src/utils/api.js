@@ -4,36 +4,31 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/a
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 export const generateBrand = async (data) => {
-  try {
-    const response = await api.post('/generate/brand', data);
-    return response.data;
-  } catch (error) {
-    console.error('Error generating brand:', error);
-    throw error;
-  }
+  const response = await api.post('/generate/brand', data);
+  return response.data;
 };
 
-export const generateLogo = async (businessName, industry, style = 'minimalist', colorScheme = null) => {
-  try {
-    const response = await api.post('/generate/logo', null, {
-      params: {
-        business_name: businessName,
-        industry: industry,
-        style: style,
-        color_scheme: colorScheme,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error generating logo:', error);
-    throw error;
-  }
+export const twistBrand = async (data) => {
+  const response = await api.post('/generate/twist', data);
+  return response.data;
+};
+
+export const downloadBrandKit = async (data) => {
+  const response = await api.post('/generate/export', data, {
+    responseType: 'blob',
+  });
+  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `${data.business_name || 'brand'}-kit.zip`);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
 };
 
 export default api;

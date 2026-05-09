@@ -1,147 +1,193 @@
-"""
-Main generation endpoint for brand creation
-"""
-
 from fastapi import APIRouter, HTTPException
-from typing import Optional
-
+from fastapi.responses import Response
 from app.models.request import (
     BrandGenerationRequest,
     BrandGenerationResponse,
     LogoResult,
     ColorScheme,
     WebsiteContent,
-    SEOtags
+    SocialPosts,
+    SEOtags,
 )
 from app.services.logo_gen import LogoGenerator
 from app.services.website_gen import WebsiteGenerator
-from app.utils.prompts import get_logo_prompt
+from app.services.brand_kit import generate_brand_kit_zip
 
 router = APIRouter()
 
 
 @router.post("/brand", response_model=BrandGenerationResponse)
 async def generate_brand(request: BrandGenerationRequest):
-    """
-    Generate a complete brand identity including logo, colors, website content, and SEO tags
-
-    Args:
-        request: BrandGenerationRequest with business details
-
-    Returns:
-        BrandGenerationResponse with all generated assets
-    """
     try:
-        # Initialize services
         logo_service = LogoGenerator()
         content_service = WebsiteGenerator()
 
-        # Generate logo URL
-        logo_prompt = get_logo_prompt(
+        brand_data = content_service.generate_brand(
             request.business_name,
+            request.tagline,
             request.industry,
-            request.style
-        )
-        logo_url = logo_service.get_logo_url(
-            request.business_name,
-            request.industry,
-            request.style,
-            request.color_scheme
-        )
-
-        # Generate brand content (colors, website copy, SEO)
-        brand_content = await content_service.generate_brand_content(
-            request.business_name,
-            request.industry,
-            request.style,
-            request.tagline
+            request.target_audience,
+            request.brand_values,
+            request.primary_goal,
+            request.tone,
+            request.brand_vibe,
+            request.logo_style,
+            request.color_mood,
+            request.font_personality,
+            request.inspiration,
         )
 
-        # Extract and structure the response
-        colors_data = brand_content.get("colors", {})
-        website_data = brand_content.get("website_content", {})
-        seo_data = brand_content.get("seo_tags", {})
+        colors = brand_data.get("colors", {})
+        logo_svg = logo_service.generate_svg_logo(
+            request.business_name,
+            request.industry,
+            request.logo_style,
+            colors,
+            request.brand_values,
+        )
 
-        # Build response object
-        response = BrandGenerationResponse(
+        return BrandGenerationResponse(
             business_name=request.business_name,
-            logo=LogoResult(
-                url=logo_url,
-                prompt=logo_prompt
-            ),
+            logo=LogoResult(svg=logo_svg, prompt=f"Logo for {request.business_name}"),
             colors=ColorScheme(
-                primary=colors_data.get("primary", "#3B82F6"),
-                secondary=colors_data.get("secondary", "#1E40AF"),
-                accent=colors_data.get("accent", "#60A5FA"),
-                background=colors_data.get("background", "#FFFFFF"),
-                text=colors_data.get("text", "#1F2937")
+                primary=colors.get("primary", "#3B82F6"),
+                secondary=colors.get("secondary", "#1E40AF"),
+                accent=colors.get("accent", "#60A5FA"),
+                background=colors.get("background", "#FFFFFF"),
+                text=colors.get("text", "#1F2937"),
             ),
             website_content=WebsiteContent(
-                headline=website_data.get("headline", f"Welcome to {request.business_name}"),
-                subheadline=website_data.get("subheadline", ""),
-                about_section=website_data.get("about_section", ""),
-                features=website_data.get("features", []),
-                cta_text=website_data.get("cta_text", "Get Started"),
-                contact_email=website_data.get("contact_email", "info@business.com")
+                html=brand_data.get("website_html", "")
+            ),
+            social_posts=SocialPosts(
+                twitter=brand_data.get("social_posts", {}).get("twitter", ""),
+                linkedin=brand_data.get("social_posts", {}).get("linkedin", ""),
+                instagram=brand_data.get("social_posts", {}).get("instagram", ""),
             ),
             seo_tags=SEOtags(
-                title=seo_data.get("title", f"{request.business_name} - {request.industry}"),
-                description=seo_data.get("description", ""),
-                keywords=seo_data.get("keywords", []),
-                og_title=seo_data.get("og_title", request.business_name),
-                og_description=seo_data.get("og_description", ""),
-                json_ld=seo_data.get("json_ld", "")
-            )
+                title=brand_data.get("seo_tags", {}).get("title", ""),
+                description=brand_data.get("seo_tags", {}).get("description", ""),
+                keywords=brand_data.get("seo_tags", {}).get("keywords", []),
+                og_title=brand_data.get("seo_tags", {}).get("og_title", ""),
+                og_description=brand_data.get("seo_tags", {}).get("og_description", ""),
+            ),
+            brand_guide=brand_data.get("brand_guide", ""),
+            brand_score=brand_data.get("brand_score", 75),
         )
-
-        return response
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error generating brand: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Brand generation failed: {str(e)}")
 
 
-@router.post("/logo")
-async def generate_logo_only(
-    business_name: str,
-    industry: str,
-    style: str = "minimalist",
-    color_scheme: Optional[str] = None
-):
-    """
-    Generate only a logo without other brand assets
-
-    Args:
-        business_name: Name of the business
-        industry: Industry/niche
-        style: Logo style
-        color_scheme: Optional color scheme
-
-    Returns:
-        Logo URL and prompt
-    """
+@router.post("/twist", response_model=BrandGenerationResponse)
+async def twist_brand(request: BrandGenerationRequest):
     try:
         logo_service = LogoGenerator()
+        content_service = WebsiteGenerator()
 
-        logo_url = logo_service.get_logo_url(
-            business_name,
-            industry,
-            style,
-            color_scheme
+        brand_data = content_service.twist_brand(
+            request.business_name,
+            request.tagline,
+            request.industry,
+            request.target_audience,
+            request.brand_values,
+            request.primary_goal,
+            request.tone,
+            request.brand_vibe,
+            request.logo_style,
+            request.font_personality,
+            request.inspiration,
         )
 
-        prompt = get_logo_prompt(business_name, industry, style)
-
-        return {
-            "url": logo_url,
-            "prompt": prompt,
-            "business_name": business_name
-        }
-
-    except Exception:
-        raise HTTPException(
-            status_code=500,
-            detail="Error generating logo"
+        colors = brand_data.get("colors", {})
+        logo_svg = logo_service.generate_svg_logo(
+            request.business_name,
+            request.industry,
+            request.logo_style,
+            colors,
+            request.brand_values,
         )
+
+        return BrandGenerationResponse(
+            business_name=request.business_name,
+            logo=LogoResult(svg=logo_svg, prompt=f"Twist logo for {request.business_name}"),
+            colors=ColorScheme(
+                primary=colors.get("primary", "#3B82F6"),
+                secondary=colors.get("secondary", "#1E40AF"),
+                accent=colors.get("accent", "#60A5FA"),
+                background=colors.get("background", "#FFFFFF"),
+                text=colors.get("text", "#1F2937"),
+            ),
+            website_content=WebsiteContent(
+                html=brand_data.get("website_html", "")
+            ),
+            social_posts=SocialPosts(
+                twitter=brand_data.get("social_posts", {}).get("twitter", ""),
+                linkedin=brand_data.get("social_posts", {}).get("linkedin", ""),
+                instagram=brand_data.get("social_posts", {}).get("instagram", ""),
+            ),
+            seo_tags=SEOtags(
+                title=brand_data.get("seo_tags", {}).get("title", ""),
+                description=brand_data.get("seo_tags", {}).get("description", ""),
+                keywords=brand_data.get("seo_tags", {}).get("keywords", []),
+                og_title=brand_data.get("seo_tags", {}).get("og_title", ""),
+                og_description=brand_data.get("seo_tags", {}).get("og_description", ""),
+            ),
+            brand_guide=brand_data.get("brand_guide", ""),
+            brand_score=brand_data.get("brand_score", 75),
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Twist generation failed: {str(e)}")
+
+
+@router.post("/export")
+async def export_brand_kit(request: BrandGenerationRequest):
+    try:
+        logo_service = LogoGenerator()
+        content_service = WebsiteGenerator()
+
+        data = content_service.generate_brand(
+            request.business_name,
+            request.tagline,
+            request.industry,
+            request.target_audience,
+            request.brand_values,
+            request.primary_goal,
+            request.tone,
+            request.brand_vibe,
+            request.logo_style,
+            request.color_mood,
+            request.font_personality,
+            request.inspiration,
+        )
+
+        colors = data.get("colors", {})
+        logo_svg = logo_service.generate_svg_logo(
+            request.business_name,
+            request.industry,
+            request.logo_style,
+            colors,
+            request.brand_values,
+        )
+
+        zip_bytes = generate_brand_kit_zip(
+            request.business_name,
+            logo_svg,
+            data.get("website_html", ""),
+            data.get("brand_guide", ""),
+            data.get("social_posts", {}),
+            data.get("seo_tags", {}),
+            colors,
+        )
+
+        return Response(
+            content=zip_bytes,
+            media_type="application/zip",
+            headers={
+                "Content-Disposition": f'attachment; filename="{request.business_name}-brand-kit.zip"'
+            },
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Export failed: {str(e)}")
