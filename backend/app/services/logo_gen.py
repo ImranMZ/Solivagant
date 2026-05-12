@@ -1,4 +1,4 @@
-import json
+import re
 from groq import Groq
 import os
 
@@ -14,39 +14,46 @@ class LogoGenerator:
         logo_style: str,
         colors: dict,
         brand_values: list[str],
+        tagline: str = "",
     ) -> str:
-        values_str = ", ".join(brand_values)
-        prompt = f"""Generate a clean, professional SVG logo for a business.
+        from app.utils.prompts import get_logo_prompt
 
-Business: {business_name}
-Industry: {industry}
-Logo Style: {logo_style}
-Brand Values: {values_str}
-Colors: primary={colors.get('primary')}, secondary={colors.get('secondary')}, accent={colors.get('accent')}
-
-Rules:
-- Return ONLY valid SVG code wrapped in <svg> tags
-- Use viewBox="0 0 400 400"
-- Include the business name text in the logo
-- Use the brand colors provided
-- Style must be: {logo_style}
-- Do NOT wrap in markdown code blocks, return raw SVG only"""
+        prompt = get_logo_prompt(
+            business_name, industry, logo_style, colors, brand_values, tagline
+        )
 
         response = self.client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": "You are an expert SVG logo designer. Return raw SVG code only, no markdown."},
+                {
+                    "role": "system",
+                    "content": "You are an expert SVG logo designer. You return ONLY raw SVG code — no markdown, no code blocks, no explanations. Every SVG you create is clean, scalable, and production-ready.",
+                },
                 {"role": "user", "content": prompt},
             ],
-            temperature=0.7,
-            max_tokens=1500,
+            temperature=0.6,
+            max_tokens=3000,
         )
 
         svg = response.choices[0].message.content.strip()
-        if svg.startswith("```svg"):
-            svg = svg[7:]
-        if svg.startswith("```"):
-            svg = svg[3:]
-        if svg.endswith("```"):
-            svg = svg[:-3]
-        return svg.strip()
+        svg = self._clean_svg(svg)
+        return svg
+
+    def _clean_svg(self, raw: str) -> str:
+        """Extract clean SVG from potentially messy LLM output."""
+        # Remove markdown code blocks
+        raw = re.sub(r"```(?:svg|xml|html)?\s*", "", raw)
+        raw = raw.strip()
+        if raw.endswith("```"):
+            raw = raw[:-3].strip()
+
+        # Extract just the SVG element if there's extra text
+        svg_match = re.search(r"<svg[\s\S]*?</svg>", raw, re.IGNORECASE)
+        if svg_match:
+            raw = svg_match.group(0)
+
+        # Ensure xmlns is present
+        if "xmlns=" not in raw and "<svg" in raw:
+            raw = raw.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"', 1)
+
+        return raw.strip()
